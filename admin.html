@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — FORNO & MARE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-100 font-['Inter']">
+
+    <div id="login-screen" class="fixed inset-0 bg-slate-900 z-[999] flex items-center justify-center">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-center">
+            <h1 class="font-['Playfair_Display'] text-2xl mb-2 text-slate-800">Accesso Gestore</h1>
+            <p class="text-slate-600 text-sm mb-6 leading-relaxed">Password che avrai solo tu: <strong class="text-orange-700">admin123</strong>. Inseriscila e cambia ciò che vuoi!</p>
+            <input type="password" id="pass-field" placeholder="Inserisci Password" 
+                   class="w-full px-4 py-3 border rounded-xl mb-4 focus:ring-2 focus:ring-orange-500 outline-none">
+            <button onclick="validaAccesso()" 
+                    class="w-full bg-orange-700 text-white py-3 rounded-xl font-semibold hover:bg-orange-800 transition">
+                Accedi ora
+            </button>
+            <p id="error-msg" class="text-red-500 text-sm mt-3 hidden">Password errata. Riprova.</p>
+        </div>
+    </div>
+
+    <div id="main-dashboard" class="hidden min-h-screen">
+        <div class="bg-orange-50 border-b border-orange-200/50 py-3 text-center">
+            <p class="text-slate-700 text-base sm:text-lg font-semibold">Grazie del tuo tempo, te ne sono grato.</p>
+        </div>
+        <header class="bg-white border-b sticky top-0 z-50">
+            <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+                <h2 class="font-['Playfair_Display'] text-xl font-bold text-orange-800">Forno & Mare Admin</h2>
+                <div class="flex gap-4">
+                    <span id="db-status" class="text-xs bg-slate-200 px-2 py-1 rounded flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-yellow-400"></span> Collegamento...
+                    </span>
+                    <button onclick="location.reload()" class="text-sm text-slate-500 underline">Esci</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-6xl mx-auto px-6 py-10 space-y-12">
+            <section class="bg-white rounded-3xl shadow-sm border p-8">
+                <h3 class="font-['Playfair_Display'] text-2xl mb-6">Stato Prenotazioni Settimanali</h3>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6 max-w-2xl">Questi stati possono essere gestiti in automatico dal sistema, ma da qui hai il controllo totale: puoi forzare la chiusura o l'apertura di un giorno in un istante se ne hai bisogno.</p>
+                <div id="days-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+                    </div>
+            </section>
+
+            <section class="bg-white rounded-3xl shadow-sm border p-8">
+                <h3 class="font-['Playfair_Display'] text-2xl mb-6 text-slate-800">Prenotazioni Ricevute</h3>
+                <p class="text-slate-600 text-sm leading-relaxed mb-6 max-w-2xl">Le prenotazioni vengono salvate qui nel tuo database. In futuro, possiamo configurare il sistema per fartele arrivare direttamente su WhatsApp o via Email per tua comodità. Inoltre, possiamo creare sezioni per i tuoi annunci (promozioni, eventi, avvisi) che potrai modificare tu stesso senza bisogno del mio intervento.</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b text-slate-400 text-sm uppercase tracking-wider">
+                                <th class="py-4 font-medium">Data/Ora</th>
+                                <th class="py-4 font-medium">Cliente</th>
+                                <th class="py-4 font-medium">Ospiti</th>
+                                <th class="py-4 font-medium">Note</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookings-body">
+                            </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <footer class="bg-white rounded-3xl shadow-sm border p-8 text-center">
+                <p class="text-slate-600 text-base leading-relaxed max-w-2xl mx-auto">Torna sul sito e vedi se tutto funziona, poi prendi il tuo tempo e contattami per un incontro per decidere meglio come fare il TUO sito con quello che TU vorrai mettere (io posso solo dare qualche consiglio…).</p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // CONFIGURAZIONE CHIAVI
+        const SUP_URL = 'https://yzjgazdvvzfbxeqqtwmn.supabase.co';
+        const SUP_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl6amdhemR2dnpmYnhlcXF0d21uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NDY3ODIsImV4cCI6MjA4NzQyMjc4Mn0.H_nxgGBYvUQlbSUxJjSyDuLC42t_lPs1g0pEK08gIPE';
+        
+        let clientSupabase;
+
+        // --- FUNZIONE ACCESSO ---
+        function validaAccesso() {
+            const val = document.getElementById('pass-field').value;
+            if (val === 'admin123') {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-dashboard').classList.remove('hidden');
+                connettiDatabase();
+            } else {
+                document.getElementById('error-msg').classList.remove('hidden');
+            }
+        }
+
+        // --- FUNZIONE DATABASE ---
+        async function connettiDatabase() {
+            try {
+                clientSupabase = window.supabase.createClient(SUP_URL, SUP_KEY);
+                
+                // Verifica stato
+                const statusDot = document.querySelector('#db-status span');
+                const statusText = document.querySelector('#db-status');
+                
+                statusDot.className = "w-2 h-2 rounded-full bg-green-500";
+                statusText.innerHTML = '<span class="w-2 h-2 rounded-full bg-green-500"></span> Database Online';
+
+                caricaDati();
+            } catch (err) {
+                console.error("Errore inizializzazione:", err);
+                alert("Errore tecnico: " + err.message);
+            }
+        }
+
+        async function caricaDati() {
+            caricaStatoGiorni();
+            caricaPrenotazioni();
+        }
+
+        async function caricaStatoGiorni() {
+            const { data, error } = await clientSupabase.from('stato_locale').select('*').order('id');
+            const container = document.getElementById('days-container');
+            
+            if (error) { console.error(error); return; }
+
+            container.innerHTML = data.map(d => `
+                <div class="p-5 border rounded-2xl bg-slate-50">
+                    <p class="font-bold text-lg mb-3">${d.giorno}</p>
+                    <select onchange="aggiornaStato('${d.giorno}', this.value)" 
+                            class="w-full p-2 rounded-lg border text-sm font-medium ${d.stato === 'occupato' ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'}">
+                        <option value="disponibile" ${d.stato === 'disponibile' ? 'selected' : ''}>Disponibile</option>
+                        <option value="occupato" ${d.stato === 'occupato' ? 'selected' : ''}>Pieno/Occupato</option>
+                        <option value="chiuso" ${d.stato === 'chiuso' ? 'selected' : ''}>Chiuso</option>
+                    </select>
+                </div>
+            `).join('');
+        }
+
+        async function aggiornaStato(giorno, nuovoStato) {
+            const { error } = await clientSupabase.from('stato_locale').update({ stato: nuovoStato }).eq('giorno', giorno);
+            if (error) alert("Errore: " + error.message);
+            else caricaStatoGiorni();
+        }
+
+        async function caricaPrenotazioni() {
+            const { data, error } = await clientSupabase.from('prenotazioni').select('*').order('created_at', { ascending: false });
+            const tbody = document.getElementById('bookings-body');
+            
+            if (error) { console.error(error); return; }
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="py-10 text-center text-slate-400">Nessuna prenotazione trovata.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = data.map(p => `
+                <tr class="border-b hover:bg-slate-50 transition">
+                    <td class="py-4">
+                        <span class="block font-semibold text-slate-800">${p.data}</span>
+                        <span class="text-xs text-orange-600 font-medium">${p.orario}</span>
+                    </td>
+                    <td class="py-4 font-medium">${p.nome}</td>
+                    <td class="py-4 text-slate-600">${p.persone}</td>
+                    <td class="py-4 text-xs text-slate-400 italic">${p.note || '—'}</td>
+                </tr>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

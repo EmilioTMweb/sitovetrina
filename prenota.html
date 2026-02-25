@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prenota — FORNO & MARE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .day-card.clickable { cursor: pointer; transition: all 0.2s; }
+        .day-card.clickable:hover { border-color: #c2410c; background-color: #fff7ed; }
+        .day-card.selected { border-color: #c2410c !important; background-color: #ffedd5 !important; transform: scale(1.05); shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .bg-impasto { background-image: url('impasto.jpg'); }
+    </style>
+</head>
+<body class="text-slate-800">
+    <!-- Sfondo fisso sfocato con effetto parallasse -->
+    <div class="fixed inset-0 -z-50 bg-impasto bg-cover bg-center bg-no-repeat"></div>
+    <!-- Velo crema per leggibilità del contenuto -->
+    <div class="fixed inset-0 -z-40 bg-white/30"></div>
+    <nav class="bg-white/80 backdrop-blur-md border-b sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="font-playfair font-bold text-xl tracking-tight text-slate-900">FORNO & MARE</a>
+            <div class="flex gap-6 text-sm font-medium">
+                <a href="index.html" class="hover:text-orange-700 transition">Home</a>
+                <a href="menu.html" class="hover:text-orange-700 transition">Menù</a>
+                <a href="prenota.html" class="text-orange-700">Prenota</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="py-12 text-center bg-white border-b border-orange-100">
+        <h1 class="font-playfair text-4xl sm:text-5xl font-bold mb-4">Prenota il tuo tavolo</h1>
+        <p class="text-slate-500 italic">Scegli un giorno, al resto pensiamo noi.</p>
+    </header>
+
+    <section class="max-w-5xl mx-auto px-6 py-12">
+        <h2 class="font-playfair text-xl mb-6 text-center text-slate-700 uppercase tracking-widest text-sm">1. Verifica disponibilità</h2>
+        <div id="days-grid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
+            <div class="day-card bg-white border-2 rounded-2xl p-5 text-center shadow-sm" data-day="Lun">
+                <p class="font-bold text-lg">Lun</p>
+                <span class="badge text-[10px] font-bold uppercase block mt-2 px-2 py-1 rounded-full bg-slate-100 text-slate-400 italic">Verifica...</span>
+            </div>
+            <div class="day-card bg-white border-2 rounded-2xl p-5 text-center shadow-sm" data-day="Mar">
+                <p class="font-bold text-lg">Mar</p>
+                <span class="badge text-[10px] font-bold uppercase block mt-2 px-2 py-1 rounded-full bg-slate-100 text-slate-400 italic">Verifica...</span>
+            </div>
+            <div class="day-card bg-white border-2 rounded-2xl p-5 text-center shadow-sm" data-day="Mer">
+                <p class="font-bold text-lg">Mer</p>
+                <span class="badge text-[10px] font-bold uppercase block mt-2 px-2 py-1 rounded-full bg-slate-100 text-slate-400 italic">Verifica...</span>
+            </div>
+            <div class="day-card bg-white border-2 rounded-2xl p-5 text-center shadow-sm" data-day="Gio">
+                <p class="font-bold text-lg">Gio</p>
+                <span class="badge text-[10px] font-bold uppercase block mt-2 px-2 py-1 rounded-full bg-slate-100 text-slate-400 italic">Verifica...</span>
+            </div>
+            <div class="day-card bg-white border-2 rounded-2xl p-5 text-center shadow-sm" data-day="Ven">
+                <p class="font-bold text-lg">Ven</p>
+                <span class="badge text-[10px] font-bold uppercase block mt-2 px-2 py-1 rounded-full bg-slate-100 text-slate-400 italic">Verifica...</span>
+            </div>
+            <div class="day-card bg-white border-2 rounded-2xl p-5 text-center shadow-sm" data-day="Sab">
+                <p class="font-bold text-lg">Sab</p>
+                <span class="badge text-[10px] font-bold uppercase block mt-2 px-2 py-1 rounded-full bg-slate-100 text-slate-400 italic">Verifica...</span>
+            </div>
+            <div class="day-card bg-white border-2 rounded-2xl p-5 text-center shadow-sm" data-day="Dom">
+                <p class="font-bold text-lg">Dom</p>
+                <span class="badge text-[10px] font-bold uppercase block mt-2 px-2 py-1 rounded-full bg-slate-100 text-slate-400 italic">Verifica...</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="booking-section" class="max-w-xl mx-auto px-6 pb-24 hidden">
+        <div class="bg-white rounded-3xl shadow-2xl p-8 border border-orange-100 relative">
+            <h2 class="font-playfair text-3xl mb-1 text-slate-800">Completa</h2>
+            <p id="day-display" class="text-orange-700 font-bold mb-8 flex items-center gap-2 uppercase text-sm tracking-wider">
+                <span class="w-2 h-2 rounded-full bg-orange-700"></span>
+                Giorno selezionato
+            </p>
+            
+            <form id="booking-form" class="space-y-5">
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase ml-1">Nome e Cognome</label>
+                    <input type="text" id="user-name" required placeholder="Es. Mario Rossi" 
+                           class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50 transition">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase ml-1">Persone</label>
+                        <select id="user-qty" required class="w-full p-4 rounded-xl border border-slate-200 outline-none bg-slate-50">
+                            <option value="2">2 Ospiti</option>
+                            <option value="4">4 Ospiti</option>
+                            <option value="6">6 Ospiti</option>
+                            <option value="8">8 Ospiti</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-400 uppercase ml-1">Orario</label>
+                        <select id="user-time" required class="w-full p-4 rounded-xl border border-slate-200 outline-none bg-slate-50">
+                            <option value="20:00">20:00</option>
+                            <option value="20:30">20:30</option>
+                            <option value="21:00">21:00</option>
+                            <option value="21:30">21:30</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase ml-1">Note Speciali</label>
+                    <textarea id="user-note" placeholder="Allergie, compleanni..." 
+                              class="w-full p-4 rounded-xl border border-slate-200 outline-none bg-slate-50 h-24 resize-none"></textarea>
+                </div>
+
+                <button type="submit" id="submit-btn" class="w-full py-5 bg-orange-700 text-white font-bold rounded-2xl shadow-xl hover:bg-orange-800 transition transform hover:-translate-y-1">
+                    PRENOTA ORA IL TUO TAVOLO
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <div id="success-screen" class="hidden fixed inset-0 bg-white/95 backdrop-blur-md z-[100] flex flex-col items-center justify-center text-center p-6">
+        <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mb-6">✓</div>
+        <h2 class="font-playfair text-4xl font-bold text-slate-900 mb-4">Tavolo Riservato!</h2>
+        <p class="text-slate-500 max-w-sm mb-10">La tua prenotazione è stata registrata con successo. Ti aspettiamo al porto per una serata indimenticabile.</p>
+        <button onclick="location.reload()" class="bg-slate-900 text-white px-10 py-4 rounded-2xl font-bold shadow-lg">Torna alla Home</button>
+    </div>
+
+    <script>
+        const SB_URL = 'https://yzjgazdvvzfbxeqqtwmn.supabase.co';
+        const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl6amdhemR2dnpmYnhlcXF0d21uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NDY3ODIsImV4cCI6MjA4NzQyMjc4Mn0.H_nxgGBYvUQlbSUxJjSyDuLC42t_lPs1g0pEK08gIPE';
+        
+        // Nome variabile univoco per evitare conflitti
+        const supabaseFinal = window.supabase.createClient(SB_URL, SB_KEY);
+
+        let daySelected = "";
+
+        async function initAvailability() {
+            console.log("Sincronizzazione database...");
+            const { data, error } = await supabaseFinal.from('stato_locale').select('*');
+            
+            if (error) {
+                console.error("Errore:", error.message);
+                return;
+            }
+
+            const mapper = {
+                'lunedì': 'Lun', 'martedì': 'Mar', 'mercoledì': 'Mer', 
+                'giovedì': 'Gio', 'venerdì': 'Ven', 'sabato': 'Sab', 'domenica': 'Dom'
+            };
+
+            data.forEach(item => {
+                const short = mapper[item.giorno.toLowerCase()];
+                const card = document.querySelector(`.day-card[data-day="${short}"]`);
+                
+                if (card) {
+                    const badge = card.querySelector('.badge');
+                    card.setAttribute('data-full-name', item.giorno);
+
+                    // Reset classi per sicurezza
+                    card.classList.remove('clickable', 'opacity-40', 'cursor-not-allowed', 'bg-slate-50');
+
+                    if (item.stato === 'disponibile') {
+                        card.classList.add('clickable');
+                        badge.className = "badge text-[10px] font-bold uppercase block mt-2 px-4 py-1 rounded-full bg-emerald-100 text-emerald-700";
+                        badge.textContent = "Disponibile";
+                    } else if (item.stato === 'occupato') {
+                        card.classList.add('opacity-40', 'cursor-not-allowed');
+                        badge.className = "badge text-[10px] font-bold uppercase block mt-2 px-4 py-1 rounded-full bg-rose-100 text-rose-700";
+                        badge.textContent = "Pieno";
+                    } else {
+                        card.classList.add('opacity-40', 'bg-slate-50');
+                        badge.textContent = "Chiuso";
+                    }
+                }
+            });
+        }
+
+        // Gestione Click card
+        document.querySelectorAll('.day-card').forEach(card => {
+            card.addEventListener('click', () => {
+                if (!card.classList.contains('clickable')) return;
+
+                document.querySelectorAll('.day-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+
+                daySelected = card.getAttribute('data-full-name');
+                document.getElementById('day-display').textContent = "Giorno: " + daySelected;
+                document.getElementById('booking-section').classList.remove('hidden');
+                document.getElementById('booking-section').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Invio Prenotazione
+        document.getElementById('booking-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.disabled = true;
+            btn.textContent = 'INVIO IN CORSO...';
+
+            const { error } = await supabaseFinal.from('prenotazioni').insert([{
+                nome: document.getElementById('user-name').value,
+                persone: parseInt(document.getElementById('user-qty').value),
+                orario: document.getElementById('user-time').value,
+                data: daySelected,
+                note: document.getElementById('user-note').value
+            }]);
+
+            if (error) {
+                alert("Errore tecnico: " + error.message);
+                btn.disabled = false;
+                btn.textContent = 'PRENOTA ORA';
+            } else {
+                document.getElementById('success-screen').classList.remove('hidden');
+                window.scrollTo(0,0);
+            }
+        });
+
+        initAvailability();
+    </script>
+</body>
+</html>

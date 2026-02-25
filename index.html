@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FORNO & MARE — Pizzeria & Pesce</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            playfair: ['"Playfair Display"', 'serif'],
+            inter: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            cream: '#fffaf0',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-playfair { font-family: 'Playfair Display', serif; }
+    .bg-paper { background-color: #faf6f0; background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e8e4dc' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+    .hero-bg {
+      background-image: url('sfondohome.jpg');
+      background-position: center top;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    .bg-crudita { background-image: url('crudità.jpg'); background-position: center; background-size: cover; background-repeat: no-repeat; }
+  </style>
+</head>
+<body class="bg-[#fffaf0] text-slate-800 antialiased">
+  <!-- NAVBAR trasparente, sopra l'Hero -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-transparent backdrop-blur-sm border-b border-white/20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+      <a href="index.html" class="font-playfair font-bold text-xl text-white tracking-tight">FORNO & MARE</a>
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="text-orange-300 font-medium border-b-2 border-orange-400 pb-0.5">Home</a>
+        <a href="menu.html" class="text-white/90 hover:text-orange-300 transition">Menù</a>
+        <a href="prenota.html" class="text-white/90 hover:text-orange-300 transition">Prenota</a>
+        <div id="status-widget" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur border border-white/30">
+          <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-green-400"></span>
+          <span id="status-text" class="text-sm font-medium text-white">Siamo Aperti</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO a tutto schermo -->
+  <section class="relative min-h-screen flex items-center justify-center hero-bg bg-center bg-cover bg-slate-800">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative z-10 px-4 text-center">
+      <h1 class="font-playfair text-6xl sm:text-7xl font-bold text-white tracking-tight mb-4">
+        FORNO & MARE
+      </h1>
+      <p class="font-playfair text-xl sm:text-2xl text-white/95 italic mb-10 max-w-2xl mx-auto">
+        Il calore del fuoco, il sapore del mare
+      </p>
+      <a href="prenota.html" class="inline-block px-8 py-4 bg-white/10 border-2 border-white text-white font-medium rounded-xl hover:bg-white hover:text-slate-800 transition focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-transparent">
+        Prenota un Tavolo
+      </a>
+    </div>
+  </section>
+
+  <!-- BANNER URGENZE -->
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 mt-12 sm:mt-16 mb-4">
+    <div class="bg-orange-300/95 border-2 border-orange-600/60 rounded-2xl py-4 px-6 flex items-center justify-center gap-3 shadow-md">
+      <span class="text-2xl" aria-hidden="true">🔥</span>
+      <p class="text-slate-800 font-medium text-center">
+        <strong>Avviso Goloso:</strong> È appena arrivato il Tonno Rosso del Mediterraneo. Disponibile stasera!
+      </p>
+    </div>
+  </div>
+
+  <!-- STORIA -->
+  <section class="bg-paper py-16 sm:py-20 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="font-playfair text-3xl sm:text-4xl font-bold text-slate-800 mb-8">
+        Una storia di farina e salsedine
+      </h2>
+      <p class="text-slate-700 text-lg leading-relaxed mb-6">
+        Tutto è iniziato quando mio nonno Piero, ogni domenica, mi portava la pizza con le acciughe pescate da lui.</p>
+      <p class="text-slate-700 text-lg leading-relaxed">
+        Da allora, ogni pizza nasce da un impasto a lunga lievitazione e ogni piatto di mare da ingredienti scelti al mattino. È questa doppia anima — forno e mare — che ci definisce: un luogo dove ritrovarsi, con l’eleganza discreta della carta di qualità e la genuinità di chi non rinuncia alla cura del particolare.
+      </p>
+    </div>
+  </section>
+
+  <!-- LIVE - Specialità domenica: sfondo sezione = crudità, box bianco ghiacciato -->
+  <section class="relative py-16 sm:py-20 px-4 bg-crudita bg-cover bg-center bg-no-repeat">
+    <div class="absolute inset-0 bg-white/40"></div>
+    <div class="relative z-10 max-w-2xl mx-auto">
+      <div class="bg-white rounded-2xl shadow-md border border-sky-200/80 overflow-hidden">
+        <div class="p-8 sm:p-10">
+          <h2 class="font-playfair text-2xl sm:text-3xl font-bold text-slate-800 mb-4">
+            Domenica sera: crudità a metà prezzo
+          </h2>
+          <p class="text-slate-600 text-lg leading-relaxed mb-8">
+            Questa domenica sera le crudità di mare sono a metà prezzo. Non perdere l’appuntamento.
+          </p>
+          <div id="countdown-box" class="bg-slate-50 rounded-xl py-6 px-6 border border-sky-200/80 mb-6">
+            <p id="countdown-label" class="text-center text-sky-700 text-sm mb-2">Prossima domenica tra</p>
+            <div id="countdown-display" class="font-playfair text-2xl sm:text-3xl font-semibold text-slate-800 text-center tabular-nums">
+              -- : -- : -- : --
+            </div>
+            <p id="countdown-units" class="text-center text-sky-600 text-xs mt-1">giorni &nbsp; ore &nbsp; min &nbsp; sec</p>
+          </div>
+          <a href="prenota.html" class="block w-full text-center px-6 py-4 bg-sky-600 text-white font-medium rounded-xl shadow-md hover:bg-sky-700 transition focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
+            Prenota
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-800 text-orange-50 py-12 px-4">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-8">
+      <div class="text-center sm:text-left">
+        <p class="font-playfair font-bold text-lg mb-2">FORNO & MARE</p>
+        <p class="text-orange-100/90">Via del Porto 12, 80100 Napoli</p>
+        <p class="text-orange-100/90 mt-1">Tel. 081 123 4567</p>
+      </div>
+      <div class="text-center sm:text-left">
+        <p class="font-semibold mb-2">Orari di apertura</p>
+        <p class="text-orange-100/90">Lun–Dom: 18:00 – 23:00</p>
+      </div>
+      <div class="flex gap-6">
+        <a href="index.html" class="text-orange-50 hover:text-orange-200 transition">Home</a>
+        <a href="menu.html" class="text-orange-50 hover:text-orange-200 transition">Menù</a>
+        <a href="prenota.html" class="text-orange-50 hover:text-orange-200 transition">Prenota</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // —— Status Aperto/Chiuso (18:00–23:00) ——
+    (function () {
+      var widget = document.getElementById('status-widget');
+      var dot = document.getElementById('status-dot');
+      var text = document.getElementById('status-text');
+      if (!widget || !dot || !text) return;
+
+      function updateStatus() {
+        var now = new Date();
+        var h = now.getHours();
+        var m = now.getMinutes();
+        var currentMinutes = h * 60 + m;
+        var openAt = 18 * 60;   // 18:00
+        var closeAt = 23 * 60;  // 23:00
+        var isOpen = currentMinutes >= openAt && currentMinutes < closeAt;
+
+        if (isOpen) {
+          dot.className = 'w-2.5 h-2.5 rounded-full bg-green-500';
+          text.textContent = 'Siamo Aperti';
+        } else {
+          dot.className = 'w-2.5 h-2.5 rounded-full bg-red-500';
+          text.textContent = 'Siamo Chiusi';
+        }
+      }
+      updateStatus();
+      setInterval(updateStatus, 60000);
+    })();
+
+    // —— Countdown alla prossima domenica sera (18:30) ——
+    (function () {
+      var countdownDisplay = document.getElementById('countdown-display');
+      if (!countdownDisplay) return;
+
+      function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+      function getNextSundayEvening() {
+        var now = new Date();
+        var target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 30, 0, 0);
+        var day = now.getDay();
+        var daysUntilSunday = (7 - day) % 7;
+        if (daysUntilSunday === 0 && now >= target) daysUntilSunday = 7;
+        target.setDate(target.getDate() + daysUntilSunday);
+        return target;
+      }
+
+      function tick() {
+        var now = new Date();
+        var target = getNextSundayEvening();
+        var diff = target - now;
+
+        var totalSeconds = Math.max(0, Math.floor(diff / 1000));
+        var days = Math.floor(totalSeconds / 86400);
+        var hours = Math.floor((totalSeconds % 86400) / 3600);
+        var minutes = Math.floor((totalSeconds % 3600) / 60);
+        var seconds = totalSeconds % 60;
+        countdownDisplay.textContent = pad(days) + ' : ' + pad(hours) + ' : ' + pad(minutes) + ' : ' + pad(seconds);
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+  </script>
+</body>
+</html>
